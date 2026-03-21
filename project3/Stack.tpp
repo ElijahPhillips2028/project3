@@ -47,20 +47,34 @@ bool Stack<ItemType>::push(const ItemType& newItem)
 template<class ItemType>
 ItemType Stack<ItemType>::peek() const
 {
-	// TODO
-	return ItemType();
+	//gets the  Items of the top pointer
+	return headPtr->getItem();
 }
 
 template<class ItemType>
 bool Stack<ItemType>::pop() 
 {
-	// TODO
-	return false;
+	if (isEmpty()) {
+        return false;
+    }
+	//makes a temporty node to add
+	Node<ItemType>* tempNode = headPtr;
+	//set the head pointer to the next item
+	headPtr = headPtr -> getNext();
+	//make temp nothing delete it then clear it with removeing one from the stack
+	tempNode->setNext(nullptr); 
+    delete tempNode;
+    tempNode = nullptr;
+    currentSize--;
+	return true;
 }
 
 template<class ItemType>
 void Stack<ItemType>::clear()
 {
-	// TODO
+	//removes items untill empty
+	while(!isEmpty()){
+		pop();
+	}
 }
 
