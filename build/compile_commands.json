@@ -1,0 +1,12 @@
+[
+{
+  "directory": "C:/Users/elilp/Downloads/project3/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe   -g -std=gnu++11 -o CMakeFiles\\test-XMLParser.dir\\test_XMLParser.cpp.obj -c C:\\Users\\elilp\\Downloads\\project3\\project3\\test_XMLParser.cpp",
+  "file": "C:/Users/elilp/Downloads/project3/project3/test_XMLParser.cpp"
+},
+{
+  "directory": "C:/Users/elilp/Downloads/project3/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe   -g -std=gnu++11 -o CMakeFiles\\test-XMLParser.dir\\XMLParser.cpp.obj -c C:\\Users\\elilp\\Downloads\\project3\\project3\\XMLParser.cpp",
+  "file": "C:/Users/elilp/Downloads/project3/project3/XMLParser.cpp"
+}
+]

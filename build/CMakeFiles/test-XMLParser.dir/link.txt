@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\test-XMLParser.dir/objects.a
+C:\msys64\mingw64\bin\ar.exe qc CMakeFiles\test-XMLParser.dir/objects.a @CMakeFiles\test-XMLParser.dir\objects1
+C:\msys64\mingw64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\test-XMLParser.dir/objects.a -Wl,--no-whole-archive -o test-XMLParser.exe -Wl,--out-implib,libtest-XMLParser.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\test-XMLParser.dir\linkLibs.rsp
