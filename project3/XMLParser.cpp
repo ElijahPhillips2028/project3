@@ -2,7 +2,8 @@
 
 XMLParser::XMLParser()
 {
-	// TODO
+	isDone = false;
+	isToken = false;
 } 
 
 bool XMLParser::tokenizeInputString(const std::string &inputString)
@@ -19,7 +20,16 @@ bool XMLParser::parseTokenizedInput()
 
 void XMLParser::clear()
 {
-	// TODO
+	//clear the vector and the bag
+	tokenizedInputVector.clear();
+	elementNameBag.clear();
+	//get rid of times in the stack
+	while (!parseStack.isEmpty()) {
+        parseStack.pop();
+    }	
+	//reset flags
+	isDone = false;
+	isToken = false;
 }
 
 std::vector<TokenStruct> XMLParser::returnTokenizedInput() const
