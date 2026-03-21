@@ -5,33 +5,42 @@
 template<class ItemType>
 Stack<ItemType>::Stack() 
 {
-	// TODO
+	//starting with nothing in the stack 
 } 
 
 template<class ItemType>
 Stack<ItemType>::~Stack()
 {
-	// TODO
+	//deletes enirtes on the stack 
+	clear();
 }
 
 template<class ItemType>
 bool Stack<ItemType>::isEmpty() const
 {
-	// TODO
-	return true;
+	//is the head pointer is nothing reurn true
+	return headPtr == nullptr;
 }
 
 template<class ItemType>
 int Stack<ItemType>::size() const
 {
-	// TODO
-	return 0;
+	//gets the current size
+	return currentSize;
 }
 
 template<class ItemType>
 bool Stack<ItemType>::push(const ItemType& newItem)
 {
-	// TODO
+	//make a new node with the new item
+	Node<ItemType>* newNodePtr = new Node<ItemType>(newItem);
+    
+    //points the node to the next from the stack
+    newNodePtr->setNext(headPtr);
+    
+    //assignes the head pointer and adds to the size 
+    headPtr = newNodePtr;
+    currentSize++;
 	return true;
 }
 
