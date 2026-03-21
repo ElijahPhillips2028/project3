@@ -39,8 +39,11 @@ std::vector<TokenStruct> XMLParser::returnTokenizedInput() const
 
 bool XMLParser::containsElementName(const std::string &inputString) const
 {
-	// TODO
-	return false;
+	//must be both a token and done
+	if(isDone == false || isToken == false){
+		return false;
+	}
+	return elementNameBag.contains(inputString);
 }
 
 int XMLParser::frequencyElementName(const std::string &inputString) const
