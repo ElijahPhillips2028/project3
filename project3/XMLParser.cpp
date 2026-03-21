@@ -1,5 +1,5 @@
 #include "XMLParser.hpp"
-
+#include <stdexcept>
 XMLParser::XMLParser()
 {
 	isDone = false;
@@ -48,7 +48,10 @@ bool XMLParser::containsElementName(const std::string &inputString) const
 
 int XMLParser::frequencyElementName(const std::string &inputString) const
 {
-	// TODO
-	return -1;
+	//must be both a token and done
+	if(isDone == false || isToken == false){
+		throw std::logic_error("Is not done / is not a token");
+	}
+	return elementNameBag.getFrequencyOf(inputString);
 }
 
