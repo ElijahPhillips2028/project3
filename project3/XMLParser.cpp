@@ -84,7 +84,7 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
             }
             
             //make sure the text becomes a content token
-            if (!allSpace) {
+            if (allSpace == false) {
                 TokenStruct token;
                 token.tokenType = CONTENT;
                 token.tokenString = content;
@@ -101,8 +101,39 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
 
 bool XMLParser::parseTokenizedInput()
 {
-	// TODO
-	return false;
+	//must go to parse 
+    if (isToken == false || tokenizedInputVector.empty()) {
+        return false;
+    }
+    
+    //clear the stack and bag
+    while (parseStack.isEmpty() == false) parseStack.pop();
+    elementNameBag.clear();
+    
+    //go through all of the tokens
+    for (const auto& token : tokenizedInputVector) {
+        
+        if (token.tokenType == START_TAG) {
+            //put tags in the stack
+            parseStack.push(token.tokenString);
+            //put the names in the bag
+            elementNameBag.add(token.tokenString);
+        } 
+        else if (token.tokenType == END_TAG) {
+            //error check
+            if (parseStack.isEmpty()) return false;
+            if (parseStack.peek() != token.tokenString) return false;
+            
+            //if it does work than pop
+            parseStack.pop();
+        } 
+        else if (token.tokenType == EMPTY_TAG) {
+            //put the token in the bag
+            elementNameBag.add(token.tokenString);
+        }
+    }
+    isDone = parseStack.isEmpty();
+    return isDone;
 }
 
 void XMLParser::clear()
