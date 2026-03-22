@@ -145,6 +145,10 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
             i = j; 
         }
     }
+	//error check
+	if (tokenizedInputVector.empty()) {
+        return false;
+    }
     //update the flags
     isToken = true; 
     return true;
