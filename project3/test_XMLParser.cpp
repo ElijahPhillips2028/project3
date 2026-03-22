@@ -173,3 +173,28 @@ TEST_CASE("XMLParser: Test XMLParser parse, contains and frequency", "[XMLParser
 }
 
 /* Your test cases here */
+TEST_CASE("My test case", "[XMLParser]")
+{
+    XMLParser myXMLParser;
+    
+    std::string testString = 
+        "<root>"
+            "<item id='1'>Content 1</item>"
+            "<item id='2'>"
+                "<subitem>Nested</subitem>"
+                "<empty_marker/>"
+            "</item>"
+            "<item id='3'>Content 3</item>"
+        "</root>";
+
+    REQUIRE(myXMLParser.tokenizeInputString(testString));
+    REQUIRE(myXMLParser.parseTokenizedInput());
+    REQUIRE(myXMLParser.containsElementName("root"));
+    REQUIRE(myXMLParser.containsElementName("subitem"));
+    REQUIRE(myXMLParser.containsElementName("empty_marker"));
+    REQUIRE(myXMLParser.frequencyElementName("item") == 3);
+    REQUIRE(myXMLParser.frequencyElementName("root") == 1);
+    REQUIRE(myXMLParser.frequencyElementName("subitem") == 1);
+    REQUIRE(myXMLParser.frequencyElementName("empty_marker") == 1);
+    REQUIRE_FALSE(myXMLParser.containsElementName("ROOT"));
+}
