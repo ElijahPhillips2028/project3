@@ -49,6 +49,9 @@ bool Stack<ItemType>::push(const ItemType& newItem)
 template<class ItemType>
 ItemType Stack<ItemType>::peek() const
 {
+	if (isEmpty()) {
+        throw std::logic_error("empty stack"); 
+    }
 	//gets the  Items of the top pointer
 	return headPtr->getItem();
 }

@@ -13,7 +13,16 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
     
     int i = 0;
     int length = inputString.length();
-    
+	//looking through white spacees
+	bool noWhiteSpace = false;
+    for (char whiteChar : inputString) {
+        if (!isspace(whiteChar)) {
+            noWhiteSpace = true;
+            break;
+        }
+    }
+    if (noWhiteSpace == false) return false;
+
     while (i < length) {
        //look for the < so show the start
         if (inputString[i] == '<') {
@@ -21,6 +30,11 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
             
             //look for the > for the end
             while (j < length && inputString[j] != '>' && inputString[j] != '<') {
+				//looking for errors
+				if (inputString[j] == '\n' || inputString[j] == '\r') {
+                    clear();
+                    return false;
+                }
                 j++;
             }
 			//check if we run into a length issue for the < for a new line than throw false
@@ -41,10 +55,15 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
                 //get tid of the ? to see the real string
                 t.tokenString = tagContent.substr(1, tagContent.length() - 2);
             } 
+			else if (!tagContent.empty() && tagContent.front() == '!') {
+                
+                t.tokenType = DECLARATION; 
+                t.tokenString = tagContent; 
+            }
             else if (!tagContent.empty() && tagContent.front() == '/') {
                 //"/" is a end_tag
                 t.tokenType = END_TAG;
-              
+
                 t.tokenString = tagContent.substr(1);
             } 
             else if (!tagContent.empty() && tagContent.back() == '/') {
@@ -52,14 +71,42 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
                 t.tokenType = EMPTY_TAG;
                 // Strip the '/' from the back
                 t.tokenString = tagContent.substr(0, tagContent.length() - 1);
+
+				size_t spacePos = t.tokenString.find_first_of(" \t\n\r");
+				if (spacePos != std::string::npos) {
+   				t.tokenString = t.tokenString.substr(0, spacePos);
+				}
             } 
             else {
                 //start_tag
                 t.tokenType = START_TAG;
                 t.tokenString = tagContent;
-            }
 
-            tokenizedInputVector.push_back(t);
+				size_t spacePos = t.tokenString.find_first_of(" \t\n\r");
+				if (spacePos != std::string::npos) {
+  			  	t.tokenString = t.tokenString.substr(0, spacePos);
+				}
+            }
+			if (t.tokenType == START_TAG || t.tokenType == END_TAG || t.tokenType == EMPTY_TAG) {
+                if (t.tokenString.empty()) {
+                    clear();
+                    return false;
+                }
+                
+                char firstChar = t.tokenString[0];
+                if (!isalpha(firstChar) && firstChar != '_' && firstChar != ':') {
+                    clear();
+                    return false;
+                }
+                
+                for (char tokenN : t.tokenString) {
+                    if (!isalnum(tokenN) && tokenN != '_' && tokenN != '-' && tokenN != ':') {
+                        clear();     
+                        return false; 
+                    }
+                }
+            }
+            tokenizedInputVector.push_back(t)	;
 			//go to the next part after the > 
             i = j + 1;
 			
@@ -69,6 +116,10 @@ bool XMLParser::tokenizeInputString(const std::string &inputString)
             int j = i;
            
             while (j < length && inputString[j] != '<') {
+				if (inputString[j] == '>') {
+                    clear();
+                    return false;
+                }
                 j++;
             }
             
@@ -110,10 +161,18 @@ bool XMLParser::parseTokenizedInput()
     while (parseStack.isEmpty() == false) parseStack.pop();
     elementNameBag.clear();
     
+    int rootCount = 0;
+    
     //go through all of the tokens
     for (const auto& token : tokenizedInputVector) {
         
         if (token.tokenType == START_TAG) {
+            // Check if this is a top-level root element
+            if (parseStack.isEmpty()) {
+                rootCount++;
+                if (rootCount > 1) return false; 
+            }
+            
             //put tags in the stack
             parseStack.push(token.tokenString);
             //put the names in the bag
@@ -128,14 +187,25 @@ bool XMLParser::parseTokenizedInput()
             parseStack.pop();
         } 
         else if (token.tokenType == EMPTY_TAG) {
+            // Empty tags can also be root elements
+            if (parseStack.isEmpty()) {
+                rootCount++;
+                if (rootCount > 1) return false; 
+            }
+            
             //put the token in the bag
             elementNameBag.add(token.tokenString);
         }
+        else if (token.tokenType == CONTENT) {
+            // Text completely outside the root tag is invalid
+            if (parseStack.isEmpty()) return false;
+        }
     }
-    isDone = parseStack.isEmpty();
+    
+    // Valid XML must have an empty stack AND exactly 1 root element
+    isDone = (parseStack.isEmpty() && rootCount == 1);
     return isDone;
 }
-
 void XMLParser::clear()
 {
 	//clear the vector and the bag
@@ -159,7 +229,7 @@ bool XMLParser::containsElementName(const std::string &inputString) const
 {
 	//must be both a token and done
 	if(isDone == false || isToken == false){
-		return false;
+		throw std::logic_error("not allowed");
 	}
 	return elementNameBag.contains(inputString);
 }
