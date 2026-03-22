@@ -1,11 +1,13 @@
 #include <stdexcept>
-
+#include <iostream>
 #include "Stack.hpp"
 
 template<class ItemType>
 Stack<ItemType>::Stack() 
 {
 	//starting with nothing in the stack 
+	headPtr = nullptr;
+    currentSize = 0;
 } 
 
 template<class ItemType>
@@ -61,6 +63,10 @@ bool Stack<ItemType>::pop()
 	Node<ItemType>* tempNode = headPtr;
 	//set the head pointer to the next item
 	headPtr = headPtr -> getNext();
+	//adding error check
+	if (tempNode == nullptr) {
+    return false; 
+	}
 	//make temp nothing delete it then clear it with removeing one from the stack
 	tempNode->setNext(nullptr); 
     delete tempNode;
