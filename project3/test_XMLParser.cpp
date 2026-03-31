@@ -153,7 +153,7 @@ TEST_CASE("XMLParser: Test parseTokenizedInput", "[XMLParser]")
 TEST_CASE("XMLParser: Test XMLParser parse, contains and frequency", "[XMLParser]")
 {
 	XMLParser myXMLParser;
-	std::ifstream myfile("../TestFile.txt");
+	std::ifstream myfile("../project3/TestFile.txt");
 	std::string inputString((std::istreambuf_iterator<char>(myfile)), (std::istreambuf_iterator<char>()));
 
 	REQUIRE(myXMLParser.tokenizeInputString(inputString));
